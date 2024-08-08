@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -19,14 +18,23 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { handleUpload } from "@/lib/fileupload"
 
 const formSchema = z.object({
     name: z.string().min(2, {
         message: "Name should be at least 2 characters",
     }),
-    symbol: z.string(),
-    imageURL: z.string(),
-    supply: z.number()
+    symbol: z.string().min(1, {
+        message: "Symbol should be at least 1 character"
+    }),
+    imageURL: z
+        .instanceof(File)
+        .refine((file) => file.type === "image/jpeg" || file.type === "image/png", {
+            message: "File must be in .jpg, .jpeg, or .png format",
+        }),
+    supply: z.coerce.number().min(1, {
+        message: "Supply must be a positive number"
+    })
 })
 
 export function TokenLaunchpad() {
@@ -35,7 +43,7 @@ export function TokenLaunchpad() {
         defaultValues: {
             name: '',
             symbol: '',
-            imageURL: '',
+            imageURL: undefined,
             supply: 0
 
         },
@@ -46,16 +54,20 @@ export function TokenLaunchpad() {
         // ✅ This will be type-safe and validated.
         console.log(values)
     }
+    async function handleFileUpload(file: File) {
+        const response = await handleUpload(file)
+        console.log(response)
+    }
 
 
     return (
-        <Card className="w-[800px]">
+        <Card className="sm:w-[400px] md:w-[1000px] ">
             <CardHeader>
-                <CardTitle className="text-2xl">Solana Token Generate</CardTitle>
+                <CardTitle className="text-3xl md:text-center md:p-2">Solana Token Generate</CardTitle>
 
             </CardHeader>
             <CardContent>
-                <div className="flex flex-row gap-8 pb-4 ">
+                <div className="flex sm:flex-col md:flex-row  gap-8 pb-4 ">
                     <div className="grow">
                         <Form {...form} >
                             <form className="space-y-8">
@@ -92,7 +104,14 @@ export function TokenLaunchpad() {
                                         <FormItem>
                                             <FormLabel>Image URL</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Your token image url" {...field} />
+                                                <Input type="file" accept=".jpg,jpeg,.png" onChange={(e) => {
+                                                    const file = e.target.files?.[0]
+                                                    if (file) {
+                                                        field.onChange(file);
+                                                        handleFileUpload(file);
+                                                    }
+
+                                                }} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -105,7 +124,9 @@ export function TokenLaunchpad() {
                                         <FormItem>
                                             <FormLabel>Intiial Supply</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Supply" {...field} />
+                                                <Input placeholder="Supply"
+                                                    {...field}
+                                                    onChange={(e) => field.onChange(Number(e.target.value))} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -115,8 +136,8 @@ export function TokenLaunchpad() {
                             </form>
                         </Form >
                     </div>
-                    <div className="flex w-[350px]  ">
-                        <img src="./solanaside.png" alt="Solana short" width="350px" height="350px" className="rounded-full" />
+                    <div className="flex sm:w-[200px] md:w-[480px] ">
+                        <img src="./solanaside.png" alt="Solana short" className="md:rounded-full flex" />
                     </div>
                 </div>
 

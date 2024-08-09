@@ -1,4 +1,4 @@
-import { useState } from 'react'
+
 import './App.css'
 
 import '@solana/wallet-adapter-react-ui/styles.css'

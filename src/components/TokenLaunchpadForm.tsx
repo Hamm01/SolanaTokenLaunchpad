@@ -127,12 +127,29 @@ export function TokenLaunchpad() {
 
     return (<div>
         {!(wallet.connected) && <div className="sm:w-[400px] md:w-[1000px] h-[50vh] flex flex-col gap-6 justify-center items-center">
-            <h2 className="font-semibold text-lg text-destructive">Please connect Wallet to use the Launchpad</h2>
-            <WalletMultiButton />
+            <div className="px-8 py-32">
+                <div className="grid gap-8 items-start justify-center">
+                    <div className="relative group">
+                        <div className="absolute -inset-0.5 bg-gradient-to-tr from-[#9945FF] to-[#14F195] rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                        <button className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600">
+                            <span className="flex items-center space-x-5">
+                                <img src="./solanaLogoMark.svg" alt="sol" width={"22px"} height={"22px"} />
+                                <span className="pr-6 text-gray-100 text-2xl teko-regular">Token Launchpad Release 2024.04</span>
+                            </span>
+                            <div className="inline-block pl-6"><WalletMultiButton /></div>
+
+                        </button>
+                    </div>
+                </div>
+                <h2 className="font-semibold text-lg text-center  text-red-500 mt-10">Please connect Wallet to use the Launchpad</h2>
+
+            </div>
+
+
         </div>}
         {wallet.connected && <div className="relative sm:w-[400px] md:w-[1100px]">
             <div className="absolute -inset-1">
-                <div className="w-full h-full mx-auto bg-gradient-to-tr from-pink-400 to-cyan-400 opacity-30  blur-lg filter ">
+                <div className="w-full h-full mx-auto bg-gradient-to-tr from-[#9945FF] to-[#14F195] opacity-30  blur-lg filter ">
                 </div>
             </div>
             <div className="relative overflow-hidden bg-white border-0 border-gray-200 rounded-2xl">

@@ -40,8 +40,13 @@ const formSchema = z.object({
         .refine((file) => file.type === "image/jpeg" || file.type === "image/png", {
             message: "File must be in .jpg, .jpeg, or .png format",
         }),
-    supply: z.coerce.number().min(1, {
-        message: "Supply must be a positive number"
+    supply: z.coerce.number().min(0, {
+        message: "Supply must be a zero or postive number"
+    }),
+    decimals: z.coerce.number().min(0, {
+        message: "Decimal in range of 0 to 9 "
+    }).max(9, {
+        message: "Decimal in range of 0 to 9"
     })
 })
 
@@ -55,6 +60,7 @@ export function TokenLaunchpad() {
             symbol: '',
             description: '',
             imageFile: undefined,
+            decimals: 0,
             supply: 0
 
         },
@@ -82,7 +88,7 @@ export function TokenLaunchpad() {
         return metaDataURI
     }
 
-    async function createToken({ metaDataURI, name, symbol, walletPubkey }: any) {
+    async function createToken({ metaDataURI, name, symbol, decimals, walletPubkey }: any) {
         const mintKeypair = Keypair.generate();
         const metaData = {
             mint: mintKeypair.publicKey,
@@ -104,7 +110,7 @@ export function TokenLaunchpad() {
                 programId: TOKEN_2022_PROGRAM_ID
             }),
             createInitializeMetadataPointerInstruction(mintKeypair.publicKey, walletPubkey, mintKeypair.publicKey, TOKEN_2022_PROGRAM_ID),
-            createInitializeMintInstruction(mintKeypair.publicKey, 9, walletPubkey, null, TOKEN_2022_PROGRAM_ID),
+            createInitializeMintInstruction(mintKeypair.publicKey, decimals, walletPubkey, null, TOKEN_2022_PROGRAM_ID),
             createInitializeInstruction({
                 programId: TOKEN_2022_PROGRAM_ID,
                 mint: mintKeypair.publicKey,
@@ -134,14 +140,15 @@ export function TokenLaunchpad() {
                         <button className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600">
                             <span className="flex items-center space-x-5">
                                 <img src="./solanaLogoMark.svg" alt="sol" width={"22px"} height={"22px"} />
-                                <span className="pr-6 text-gray-100 text-2xl teko-regular">Token Launchpad Release 2024.04</span>
+                                <span className="pr-6 text-gray-100 text-xl teko-regular">Token Launchpad Release 2024.04</span>
                             </span>
-                            <div className="inline-block pl-6"><WalletMultiButton /></div>
+                            <span className="pl-6 text-indigo-400 group-hover:text-gray-100 transition duration-200">See what's new &rarr;</span>
 
                         </button>
                     </div>
                 </div>
-                <h2 className="font-semibold text-lg text-center  text-red-500 mt-10">Please connect Wallet to use the Launchpad</h2>
+                <h2 className="font-semibold text-md text-center  text-red-500 mt-10">Please connect Wallet to use the Launchpad</h2>
+                <div className="flex justify-center mt-5"><WalletMultiButton /></div>
 
             </div>
 
@@ -202,41 +209,76 @@ export function TokenLaunchpad() {
                                                 </FormItem>
                                             )}
                                         />
-                                        <FormField
-                                            name="imageFile"
-                                            control={form.control}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Image</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="file" accept=".jpg,jpeg,.png" onChange={(e) => {
-                                                            const file = e.target.files?.[0]
-                                                            if (file) {
-                                                                field.onChange(file);
-                                                            }
+                                        <div className="flex flex-row space-x-2">
+                                            <div className="flex flex-col  justify-between">
+                                                <FormField
+                                                    name="decimals"
+                                                    control={form.control}
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Decimals</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="Decimals" type="number" min={0} max={9}
+                                                                    {...field}
+                                                                    onChange={(e) => field.onChange(Number(e.target.value))} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                /><FormField
+                                                    name="supply"
+                                                    control={form.control}
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Initial Supply</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="Supply"
+                                                                    {...field}
+                                                                    onChange={(e) => field.onChange(Number(e.target.value))} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <FormField
+                                                name="imageFile"
+                                                control={form.control}
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Image</FormLabel>
+                                                        <FormControl>
+                                                            <div className="flex items-center justify-center w-full">
+                                                                <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 .dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 .dark:hover:bg-gray-600">
+                                                                    <div className="flex flex-col items-center justify-center pt-5 pb-8">
+                                                                        <svg className="w-12 h-12  text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                                                        </svg>
 
-                                                        }} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            name="supply"
-                                            control={form.control}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Intiial Supply</FormLabel>
-                                                    <FormControl>
-                                                        <Input placeholder="Supply"
-                                                            {...field}
-                                                            onChange={(e) => field.onChange(Number(e.target.value))} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <Button type="submit" onClick={form.handleSubmit(onSubmit)}>Create Token</Button>
+                                                                    </div>
+                                                                    <Input type="file" accept=".jpg,jpeg,.png" onChange={(e) => {
+                                                                        const file = e.target.files?.[0]
+                                                                        if (file) {
+                                                                            field.onChange(file);
+                                                                        }
+
+                                                                    }} />
+                                                                </label>
+                                                            </div>
+
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                        </div>
+
+
+                                        <div className="flex justify-center">
+
+                                            <Button type="submit" onClick={form.handleSubmit(onSubmit)}>Create Token</Button>
+                                        </div>
                                     </form>
                                 </Form >
                             </div>

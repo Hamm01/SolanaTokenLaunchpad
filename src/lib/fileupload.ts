@@ -8,7 +8,6 @@ export async function handleUpload(file: File) {
   try {
     const formData = new FormData()
     formData.append('file', file)
-    console.log({ KEY, SECRET, URL, ImageGateway })
     const response = await axios.post(URL, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',

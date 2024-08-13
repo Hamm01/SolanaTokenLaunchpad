@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { handleUpload } from "@/lib/fileupload"
 import { Keypair, SystemProgram, Transaction } from "@solana/web3.js"
-import { createInitializeMetadataPointerInstruction, createInitializeMintInstruction, ExtensionType, getMintLen, LENGTH_SIZE, TOKEN_2022_PROGRAM_ID, TYPE_SIZE } from "@solana/spl-token"
+import { createAssociatedTokenAccountInstruction, createInitializeMetadataPointerInstruction, createInitializeMintInstruction, createMintToInstruction, ExtensionType, getAssociatedTokenAddress, getMintLen, LENGTH_SIZE, TOKEN_2022_PROGRAM_ID, TYPE_SIZE } from "@solana/spl-token"
 import { createInitializeInstruction, pack } from '@solana/spl-token-metadata';
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
@@ -73,6 +73,7 @@ export function TokenLaunchpad() {
             await createToken({ ...values, metaDataURI, walletPubkey: wallet.publicKey })
 
         }
+        form.reset()
 
     }
 
@@ -88,7 +89,7 @@ export function TokenLaunchpad() {
         return metaDataURI
     }
 
-    async function createToken({ metaDataURI, name, symbol, decimals, walletPubkey }: any) {
+    async function createToken({ metaDataURI, name, symbol, decimals, supply, walletPubkey }: any) {
         const mintKeypair = Keypair.generate();
         const metaData = {
             mint: mintKeypair.publicKey,
@@ -100,8 +101,7 @@ export function TokenLaunchpad() {
         const mintLen = getMintLen([ExtensionType.MetadataPointer])
         const metadataLen = TYPE_SIZE + LENGTH_SIZE + pack(metaData).length
         const lamports = await connection.getMinimumBalanceForRentExemption(mintLen + metadataLen);
-
-        const transaction = new Transaction().add(
+        let transaction = new Transaction().add(
             SystemProgram.createAccount({
                 fromPubkey: walletPubkey,
                 newAccountPubkey: mintKeypair.publicKey,
@@ -128,8 +128,57 @@ export function TokenLaunchpad() {
 
         console.log(`Token mint created at ${mintKeypair.publicKey.toBase58()}`)
 
-        // Creating The ATA for the wallet
+        // Creating ATA for the mint token
+        const associatedTokenAccountAddress = await getAssociatedTokenAddress(
+            mintKeypair.publicKey,    // Mint address of the token
+            walletPubkey,             // Owner of the token account
+            false,
+            TOKEN_2022_PROGRAM_ID,
+        )
 
+        console.log("associatedTokenAccountAddress:  ", associatedTokenAccountAddress)
+
+        try {
+            const accountInfo = await connection.getAccountInfo(associatedTokenAccountAddress);
+            if (accountInfo === null) {
+
+                const createAtaInstruction = createAssociatedTokenAccountInstruction(
+                    walletPubkey,                  // Payer for creating the account
+                    associatedTokenAccountAddress, // Associated token account address
+                    walletPubkey,                  // Owner of the token account
+                    mintKeypair.publicKey,          // Mint token address
+                    TOKEN_2022_PROGRAM_ID,
+                );
+                transaction = new Transaction().add(createAtaInstruction);
+                transaction.feePayer = walletPubkey;
+                transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+                const signature = await wallet.sendTransaction(transaction, connection);
+                console.log(`Associated Token Account created with signature: ${signature}`);
+            }
+            else {
+                console.log(`Associated Token Account already exists at ${associatedTokenAccountAddress.toBase58()}`);
+            }
+        }
+        catch (error) {
+            console.error("Error creating the associated token account:", error);
+            return;
+        }
+        // Minting Tokens To the ATA
+
+        const mintAmount = supply * Math.pow(10, decimals)
+        const mintToInstruction = createMintToInstruction(
+            mintKeypair.publicKey,
+            associatedTokenAccountAddress,
+            walletPubkey,
+            mintAmount,
+            [],
+            TOKEN_2022_PROGRAM_ID
+        )
+        const mintTransaction = new Transaction().add(mintToInstruction)
+        mintTransaction.feePayer = walletPubkey;
+        mintTransaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+        await wallet.sendTransaction(mintTransaction, connection);
+        console.log(`Minted ${supply} tokens to ${associatedTokenAccountAddress.toBase58()}`);
     }
 
 
@@ -287,9 +336,9 @@ export function TokenLaunchpad() {
                             <div className="relative flex sm:w-[200px] md:w-[50%] group">
                                 <img src="./solanaside.png" alt="Solana short" className="md:rounded-full w-full h-auto group-hover:opacity-0" />
                                 <div
-                                    className="absolute inset-0 bg-opacity-60 teko-regular flex flex-col text-2xl gap-2 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+                                    className="absolute inset-0 bg-opacity-60 teko-regular text-gray-600 flex flex-col text-2xl gap-2 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
                                 >
-                                    <h2 className="text-center text-4xl">How to use Solana Token Launchpad</h2>
+                                    <h2 className="text-center text-4xl text-gray-500">How to use Solana Token Launchpad</h2>
                                     <p>1. Connect your Solana wallet.</p>
                                     <p>2. Specify the desired name for your Token</p>
                                     <p>3. Indicate the symbol (max 8 characters).</p>
@@ -298,6 +347,7 @@ export function TokenLaunchpad() {
                                     <p>6. Upload the image for your token (PNG).</p>
                                     <p>7. Determine the Supply of your Token.</p>
                                     <p>8. Click on create, accept the transaction and wait until your tokens ready.</p>
+                                    <p>9. You will need to sign multiple times the transactions on wallet you are using</p>
                                     <p>The cost of Token creation is 0.5 SOL, covering all fees for SPL Token Creation.</p>
 
                                 </div>

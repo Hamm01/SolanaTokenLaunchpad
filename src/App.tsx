@@ -13,16 +13,18 @@ function App() {
 
   return (
     <div>
-      <main className='max-w-7xl mx-auto  flex flex-col gap-4 p-4 min-h-[92vh] '>
-        <WalletContext>
+      <WalletContext>
+        <main className='max-w-7xl  mx-auto flex flex-col gap-4 p-4 min-h-[92vh] '>
+
           <Navbar />
+
           <div className='flex flex-col pt-10 pb-10 justify-center items-center '>
             <TokenLaunchpad />
 
           </div>
           {/* <TokenLaunchpad></TokenLaunchpad> */}
-        </WalletContext>
-      </main>
+        </main>
+      </WalletContext>
       <Footer />
     </div>
   )

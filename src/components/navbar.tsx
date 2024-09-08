@@ -6,7 +6,7 @@ import { ModeToggle } from './mode-toggle'
 export const Navbar = () => {
     return (
         <section className='navbar'>
-            <div className='flex mobile:flex-col mobile:max-sm:gap-4 md:flex-row mobile:items-start md:justify-between md:items-center mobile:max-sm:p-2'>
+            <div className='flex mobile:flex-col mobile:max-sm:gap-4 mobile:items-start md:flex-row md:justify-between md:items-center mobile:max-sm:p-2 md:p-4 lg:p-0 lg:pt-2'>
                 <div className='flex flex-row mobile:gap-1 md:gap-3 justify-center items-center '>
                     <img src="./solanaLogoMark.svg" alt="Logo" className={`mobile:w-[40px] md:w-[50px]`} />
                     <h2 className='text-primary teko-regular mobile:max-sm:text-[24px] font-bold scroll-m-20 text-3xl tracking-normal'>TokenLaunchpad</h2>

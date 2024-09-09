@@ -183,16 +183,16 @@ export function TokenLaunchpad() {
 
 
     return (<div>
-        {!(wallet.connected) && <div className="sm:w-[400px] md:w-[1000px] h-[50vh] flex flex-col gap-6 justify-center items-center">
+        {!(wallet.connected) && <div className="max-mobile:w-[320px] max-sm:w-[400px] max-md:w-3xl max-lg:w-5xl max-w-7xl h-[50vh] flex flex-col gap-6 justify-center items-center">
 
-            <div className="max-sm:px-2 px-8 py-32">
+            <div className="max-sm:px-6 px-8 py-32">
                 <div className="grid gap-8 items-start justify-center">
                     <div className="relative group">
                         <div className="absolute -inset-0.5 bg-gradient-to-tr from-[#9945FF] to-[#14F195] rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
                         <button className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600">
                             <span className="flex items-center space-x-5">
                                 <img src="./solanaLogoMark.svg" alt="sol" width={"22px"} height={"22px"} />
-                                <span className="max-sm:pr-2 pr-6 mobile:max-sm:text-[18px] text-gray-100 text-xl teko-regular">Token Launchpad Release 2024.04</span>
+                                <span className="max-sm:pr-2 pr-6 max-mobile:text-[12px] max-sm:text-[18px] text-gray-100 text-xl teko-regular">Token Launchpad Release 2024.04</span>
                             </span>
                             <span className="pl-6 text-indigo-400 group-hover:text-gray-100 transition duration-200">See what's new &rarr;</span>
 
@@ -200,7 +200,7 @@ export function TokenLaunchpad() {
                     </div>
                 </div>
                 <h2 className="font-semibold text-md text-center  text-red-500 mt-10">Please connect Wallet to use the Launchpad</h2>
-                <div className="flex justify-center mt-5"><WalletMultiButton /></div>
+                <div className="max-sm:hidden flex justify-center mt-5"><WalletMultiButton /></div>
 
             </div>
 

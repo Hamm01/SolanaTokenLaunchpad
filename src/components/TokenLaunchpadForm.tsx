@@ -209,19 +209,19 @@ export function TokenLaunchpad() {
 
         </div>}
         {
-            wallet.connected && <div className="relative sm:w-[400px] md:w-[1100px]">
+            wallet.connected && <div className="relative max-mobile:w-[320px] max-sm:w-[400px] md:w-[1100px]">
                 <div className="absolute -inset-1">
                     <div className="w-full h-full mx-auto bg-gradient-to-tr from-[#9945FF] to-[#14F195] opacity-30  blur-lg filter ">
                     </div>
                 </div>
                 <div className="relative overflow-hidden bg-white border-0 border-gray-200 rounded-2xl">
-                    <Card className="sm:w-[400px] md:w-[1100px] ">
+                    <Card className="max-mobile:max-w-[300px]  max-sm:w-[400px]">
                         <CardHeader>
-                            <CardTitle className="text-4xl md:text-center md:p-2 teko-regular">Solana Token Generate</CardTitle>
+                            <CardTitle className="max-sm:text-[20px] text-4xl mobile:text-center md:p-2 teko-regular">Solana Token Generate</CardTitle>
 
                         </CardHeader>
                         <CardContent>
-                            <div className="flex sm:flex-col md:flex-row  gap-8 pb-4 ">
+                            <div className="flex mobile:flex-col md:flex-row  gap-8  pb-4 ">
                                 <div className="p-4 grow border rounded-md ">
                                     <Form {...form}  >
                                         <form className="space-y-8">
@@ -337,7 +337,7 @@ export function TokenLaunchpad() {
                                         </form>
                                     </Form >
                                 </div>
-                                <div className="relative flex sm:w-[200px] md:w-[50%] group">
+                                <div className="relative max-sm:hidden flex sm:w-[200px] md:w-[50%] group">
                                     <img src="./solanaside.png" alt="Solana short" className="md:rounded-full w-full h-auto group-hover:opacity-0" />
                                     <div
                                         className="absolute inset-0 bg-opacity-60 teko-regular text-gray-600 flex flex-col text-2xl gap-2 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"

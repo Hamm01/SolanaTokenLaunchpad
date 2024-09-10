@@ -14,7 +14,7 @@ function App() {
   return (
     <div>
       <WalletContext>
-        <main className='max-w-7xl  mx-auto flex flex-col gap-4 p-4 min-h-[92vh] '>
+        <main className='max-w-7xl  mx-auto flex flex-col gap-4 md:p-4 min-h-[92vh] '>
 
           <Navbar />
 

@@ -12,8 +12,7 @@ export const Navbar = () => {
                     <img src="./solanaLogoMark.svg" alt="Logo" className={`mobile:w-[40px] md:w-[50px]`} />
                     <h2 className='text-primary teko-regular mobile:max-sm:text-[24px] font-bold scroll-m-20 text-3xl tracking-normal'>TokenLaunchpad</h2>
                 </div>
-                <div className='flex gap-4 flex-row mobile:max-sm:w-[320px] mobile:items-center mobile:justify-end  md:justify-center md:items-center'>
-
+                <div className='flex gap-4 flex-row mobile:max-sm:w-full mobile:items-center mobile:justify-end  md:justify-center md:items-center'>
                     <WalletMultiButton />
                     <div className='mobile:max-sm:hidden'>
                         <ModeToggle />

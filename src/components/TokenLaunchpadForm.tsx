@@ -209,9 +209,9 @@ export function TokenLaunchpad() {
                 </div>
             </div>
 
-            <Card className="w-full relative overflow-hidden border border-gray-200 rounded-2xl">
+            <Card className="w-full relative overflow-hidden border-0 border-gray-200 rounded-2xl">
                 <CardHeader>
-                    <CardTitle className="max-sm:text-[20px] text-4xl mobile:text-center md:p-2 teko-regular">Solana Token Generate</CardTitle>
+                    <CardTitle className="max-sm:text-[24px] text-4xl mobile:text-center md:p-2 teko-regular">Solana Token Generate</CardTitle>
 
                 </CardHeader>
                 <CardContent className="mobile:p-3 mobile:pt-0 md:p-6 md:pt-0">

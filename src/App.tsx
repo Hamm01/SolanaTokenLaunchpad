@@ -2,8 +2,8 @@
 import './App.css'
 
 import '@solana/wallet-adapter-react-ui/styles.css'
-
 import { WalletContext } from '@/components/walletContext'
+import { Toaster } from 'sonner'
 import { Navbar } from '@/components/navbar'
 import Footer from '@/components/Footer'
 import { TokenLaunchpad } from '@/components/TokenLaunchpadForm'
@@ -25,6 +25,7 @@ function App() {
           {/* <TokenLaunchpad></TokenLaunchpad> */}
         </main>
       </WalletContext>
+      <Toaster position="top-center" expand={false} richColors />
       <Footer />
     </div>
   )

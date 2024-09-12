@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
-
+import { toast } from 'sonner'
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -125,7 +125,7 @@ export function TokenLaunchpad() {
         transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash
         transaction.partialSign(mintKeypair)
         await wallet.sendTransaction(transaction, connection)
-
+        toast.success(`Token mint created at ${mintKeypair.publicKey.toBase58()}`)
         console.log(`Token mint created at ${mintKeypair.publicKey.toBase58()}`)
 
         // Creating ATA for the mint token
@@ -135,8 +135,8 @@ export function TokenLaunchpad() {
             false,
             TOKEN_2022_PROGRAM_ID,
         )
-
-        console.log("associatedTokenAccountAddress:  ", associatedTokenAccountAddress)
+        toast.success(`Associated Token Account Address: ${associatedTokenAccountAddress}`)
+        console.log("Associated Token Account Address: ", associatedTokenAccountAddress)
 
         try {
             const accountInfo = await connection.getAccountInfo(associatedTokenAccountAddress);
@@ -153,13 +153,16 @@ export function TokenLaunchpad() {
                 transaction.feePayer = walletPubkey;
                 transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
                 const signature = await wallet.sendTransaction(transaction, connection);
+                toast.success(`Associated Token Account created with signature: ${signature}`)
                 console.log(`Associated Token Account created with signature: ${signature}`);
             }
             else {
+                toast.info(`Associated Token Account already exists at ${associatedTokenAccountAddress.toBase58()}`)
                 console.log(`Associated Token Account already exists at ${associatedTokenAccountAddress.toBase58()}`);
             }
         }
         catch (error) {
+            toast.error(`Error creating the associated token account:${error} `)
             console.error("Error creating the associated token account:", error);
             return;
         }
@@ -178,6 +181,8 @@ export function TokenLaunchpad() {
         mintTransaction.feePayer = walletPubkey;
         mintTransaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
         await wallet.sendTransaction(mintTransaction, connection);
+        toast.success(`Token Mint Sucessfull`)
+        toast.success(`Minted ${supply} tokens to ${associatedTokenAccountAddress.toBase58()}`)
         console.log(`Minted ${supply} tokens to ${associatedTokenAccountAddress.toBase58()}`);
     }
 

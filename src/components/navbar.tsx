@@ -13,7 +13,7 @@ export const Navbar = () => {
                     <h2 className='text-primary teko-regular mobile:max-sm:text-[24px] font-bold scroll-m-20 text-3xl tracking-normal'>TokenLaunchpad</h2>
                 </div>
                 <div className='flex gap-4 flex-row mobile:max-sm:w-full mobile:items-center mobile:justify-end  md:justify-center md:items-center'>
-                    <WalletMultiButton />
+                    <WalletMultiButton className='bg-gradient-to-tr from-[#9945FF] to-[#14F195]' />
                     <div className='mobile:max-sm:hidden'>
                         <ModeToggle />
                     </div>

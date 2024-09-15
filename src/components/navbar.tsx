@@ -4,7 +4,11 @@ import {
 } from '@solana/wallet-adapter-react-ui'
 import { ModeToggle } from './mode-toggle'
 
+
+
+
 export const Navbar = () => {
+
     return (
         <section className='navbar'>
             <div className='flex mobile:flex-col mobile:max-sm:gap-4 mobile:items-start md:flex-row md:justify-between md:items-center mobile:p-4 lg:p-0 lg:pt-2'>
@@ -18,7 +22,6 @@ export const Navbar = () => {
                         <ModeToggle />
                     </div>
                 </div>
-
             </div>
 
         </section>

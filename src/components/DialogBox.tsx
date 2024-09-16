@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from '@/components/ui/input'
 import { CircleCheck, SquareArrowOutUpRight } from 'lucide-react';
 export const TokenInfoDialogBox = (props: any) => {
-
+    const link = "https://explorer.solana.com"
     const { tokenInfoStore, open, setOpen } = props
 
     return (
@@ -38,7 +38,10 @@ export const TokenInfoDialogBox = (props: any) => {
                         <div className="grid grid-cols-4 gap-4">
 
                             <Input id="tokenMint" value={tokenInfoStore.mintKeypairPubkey} className="col-span-3" />
-                            <Button variant="outline" className="hover:bg-destructive" > <span ><SquareArrowOutUpRight size={18} /></span>  </Button>
+                            <Button variant="outline"
+                                className="hover:bg-destructive"
+                                onClick={() => window.open(`${link}/address/${tokenInfoStore.mintKeypairPubkey}?cluster=devnet`, '_blank')}
+                            > <span ><SquareArrowOutUpRight size={18} /></span>  </Button>
                         </div>
                         <div className="flex">
                             <Label htmlFor="username" className="text-right text-sm whitespace-nowrap">
@@ -48,6 +51,10 @@ export const TokenInfoDialogBox = (props: any) => {
                         <div className="grid grid-cols-4 items-center gap-4">
 
                             <Input id="username" value={tokenInfoStore.associatedTokenAccountAddress} className="col-span-3" />
+                            <Button variant="outline"
+                                className="hover:bg-destructive"
+                                onClick={() => window.open(`${link}/address/${tokenInfoStore.associatedTokenAccountAddress}?cluster=devnet`, '_blank')}
+                            > <span ><SquareArrowOutUpRight size={18} /></span>  </Button>
                         </div>
                         <div className="flex">
                             <Label htmlFor="username" className="text-right">
@@ -55,8 +62,11 @@ export const TokenInfoDialogBox = (props: any) => {
                             </Label>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-
                             <Input id="username" value={tokenInfoStore.associatedAccountSignature} className="col-span-3" />
+                            <Button variant="outline"
+                                className="hover:bg-destructive"
+                                onClick={() => window.open(`${link}/tx/${tokenInfoStore.associatedAccountSignature}?cluster=devnet`, '_blank')}
+                            > <span ><SquareArrowOutUpRight size={18} /></span>  </Button>
                         </div>
                         <div className="flex">
                             <Label htmlFor="username" className="text-right">

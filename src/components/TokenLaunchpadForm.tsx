@@ -17,13 +17,17 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+
+import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { handleUpload } from "@/lib/fileupload"
+import { TokenInfoDialogBox } from "@/components/DialogBox"
 import { Keypair, SystemProgram, Transaction } from "@solana/web3.js"
 import { createAssociatedTokenAccountInstruction, createInitializeMetadataPointerInstruction, createInitializeMintInstruction, createMintToInstruction, ExtensionType, getAssociatedTokenAddress, getMintLen, LENGTH_SIZE, TOKEN_2022_PROGRAM_ID, TYPE_SIZE } from "@solana/spl-token"
 import { createInitializeInstruction, pack } from '@solana/spl-token-metadata';
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui"
+
 
 const formSchema = z.object({
     name: z.string().min(2, {
@@ -53,6 +57,8 @@ const formSchema = z.object({
 export function TokenLaunchpad() {
     const wallet = useWallet();
     const { connection } = useConnection();
+    const [dialogopen, setDialogopen] = useState(false)
+    const [tokenInfoStore, setTokenInfoStore] = useState({})
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -73,6 +79,7 @@ export function TokenLaunchpad() {
             await createToken({ ...values, metaDataURI, walletPubkey: wallet.publicKey })
 
         }
+
         form.reset()
 
     }
@@ -91,6 +98,7 @@ export function TokenLaunchpad() {
 
     async function createToken({ metaDataURI, name, symbol, decimals, supply, walletPubkey }: any) {
         const mintKeypair = Keypair.generate();
+        const mintKeypairPubkey = mintKeypair.publicKey.toBase58()
         const metaData = {
             mint: mintKeypair.publicKey,
             name,
@@ -137,7 +145,7 @@ export function TokenLaunchpad() {
         )
         toast.success(`Associated Token Account Address: ${associatedTokenAccountAddress}`)
         console.log("Associated Token Account Address: ", associatedTokenAccountAddress)
-
+        let associatedAccountSignature
         try {
             const accountInfo = await connection.getAccountInfo(associatedTokenAccountAddress);
             if (accountInfo === null) {
@@ -152,9 +160,10 @@ export function TokenLaunchpad() {
                 transaction = new Transaction().add(createAtaInstruction);
                 transaction.feePayer = walletPubkey;
                 transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
-                const signature = await wallet.sendTransaction(transaction, connection);
-                toast.success(`Associated Token Account created with signature: ${signature}`)
-                console.log(`Associated Token Account created with signature: ${signature}`);
+                associatedAccountSignature = await wallet.sendTransaction(transaction, connection);
+
+                toast.success(`Associated Token Account created with signature: ${associatedAccountSignature}`)
+                console.log(`Associated Token Account created with signature: ${associatedAccountSignature}`);
             }
             else {
                 toast.info(`Associated Token Account already exists at ${associatedTokenAccountAddress.toBase58()}`)
@@ -181,9 +190,11 @@ export function TokenLaunchpad() {
         mintTransaction.feePayer = walletPubkey;
         mintTransaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
         await wallet.sendTransaction(mintTransaction, connection);
+        setTokenInfoStore({ mintKeypairPubkey, associatedTokenAccountAddress, associatedAccountSignature, supply })
         toast.success(`Token Mint Sucessfull`)
         toast.success(`Minted ${supply} tokens to ${associatedTokenAccountAddress.toBase58()}`)
         console.log(`Minted ${supply} tokens to ${associatedTokenAccountAddress.toBase58()}`);
+        setDialogopen(true)
     }
 
 
@@ -214,6 +225,7 @@ export function TokenLaunchpad() {
                 </div>
             </div>
 
+            <TokenInfoDialogBox open={dialogopen} setOpen={setDialogopen} tokenInfoStore={tokenInfoStore} />
             <Card className="w-full relative overflow-hidden border-0 border-gray-200 rounded-2xl">
                 <CardHeader>
                     <CardTitle className="max-sm:text-[24px] text-4xl mobile:text-center md:p-2 teko-regular">Solana Token Generate</CardTitle>
@@ -360,7 +372,6 @@ export function TokenLaunchpad() {
                 </CardContent>
 
             </Card>
-
         </div>
 
         }

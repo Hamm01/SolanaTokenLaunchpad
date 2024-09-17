@@ -79,9 +79,7 @@ export function TokenLaunchpad() {
             await createToken({ ...values, metaDataURI, walletPubkey: wallet.publicKey })
 
         }
-
         form.reset()
-
     }
 
     async function handleFileUpload({ name, symbol, description, imageFile }: z.infer<typeof formSchema>) {

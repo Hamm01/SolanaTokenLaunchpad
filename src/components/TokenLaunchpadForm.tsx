@@ -21,7 +21,7 @@ import {
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { handleUpload } from "@/lib/fileupload"
-import { TokenInfoDialogBox } from "@/components/DialogBox"
+import { TokenInfoDialogBox, ErrorInfoDialogBox } from "@/components/DialogBox"
 import { Keypair, SystemProgram, Transaction } from "@solana/web3.js"
 import { createAssociatedTokenAccountInstruction, createInitializeMetadataPointerInstruction, createInitializeMintInstruction, createMintToInstruction, ExtensionType, getAssociatedTokenAddress, getMintLen, LENGTH_SIZE, TOKEN_2022_PROGRAM_ID, TYPE_SIZE } from "@solana/spl-token"
 import { createInitializeInstruction, pack } from '@solana/spl-token-metadata';
@@ -58,6 +58,7 @@ export function TokenLaunchpad() {
     const wallet = useWallet();
     const { connection } = useConnection();
     const [dialogopen, setDialogopen] = useState(false)
+    const [errdialogopen, setErrdialogopen] = useState(false)
     const [tokenInfoStore, setTokenInfoStore] = useState({})
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -171,6 +172,7 @@ export function TokenLaunchpad() {
         catch (error) {
             toast.error(`Error creating the associated token account:${error} `)
             console.error("Error creating the associated token account:", error);
+            setErrdialogopen(true)
             return;
         }
         // Minting Tokens To the ATA
@@ -224,6 +226,7 @@ export function TokenLaunchpad() {
             </div>
 
             <TokenInfoDialogBox open={dialogopen} setOpen={setDialogopen} tokenInfoStore={tokenInfoStore} />
+            <ErrorInfoDialogBox open={errdialogopen} setOpen={setErrdialogopen} />
             <Card className="w-full relative overflow-hidden border-0 border-gray-200 rounded-2xl">
                 <CardHeader>
                     <CardTitle className="max-sm:text-[24px] text-4xl mobile:text-center md:p-2 teko-regular">Solana Token Generate</CardTitle>

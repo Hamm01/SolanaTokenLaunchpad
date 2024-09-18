@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Label } from "@/components/ui/label"
 import { Input } from '@/components/ui/input'
-import { CircleCheck, SquareArrowOutUpRight } from 'lucide-react';
+import { CircleCheck, CircleXIcon, SquareArrowOutUpRight } from 'lucide-react';
 export const TokenInfoDialogBox = (props: any) => {
     const link = "https://explorer.solana.com"
     const { tokenInfoStore, open, setOpen } = props
@@ -82,6 +82,31 @@ export const TokenInfoDialogBox = (props: any) => {
                         <div className="border-t-2 w-full flex justify-end pt-2">
                             <p className="text-lg ">Developed by Himanish</p>
                         </div>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+        </div>
+    )
+}
+export const ErrorInfoDialogBox = ({ open, setOpen }: any) => {
+    return (
+        <div>
+            <Dialog open={open} onOpenChange={setOpen} >
+
+                <DialogContent className="sm:max-w-[425px] border-2 border-red-500 ">
+                    <DialogHeader className="w-full ">
+                        <div className="flex flex-col gap-2 items-center">
+                            <CircleXIcon size={80} className="text-red-500" />
+                            <DialogTitle className="text-center md:text-xl " >Transaction Error</DialogTitle>
+                        </div>
+                        <DialogDescription className="text-center text-lg">
+                            Error in creating associated token address
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <DialogFooter>
+
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

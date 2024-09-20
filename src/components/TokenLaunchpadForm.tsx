@@ -17,7 +17,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-
+import { motion as m } from 'framer-motion'
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { handleUpload } from "@/lib/fileupload"
@@ -203,9 +203,21 @@ export function TokenLaunchpad() {
 
 
     return (<div>
-        {!(wallet.connected) && <div className="max-mobile:w-[320px] max-sm:w-[400px] max-md:w-3xl max-lg:w-5xl max-w-7xl h-[50vh] flex flex-col gap-6 justify-center items-center">
+        {!(wallet.connected) && <m.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+                duration: 0.3,
+                ease: "easeInOut"
+            }} className="max-mobile:w-[320px] max-sm:w-[400px] max-md:w-3xl max-lg:w-5xl max-w-7xl h-[50vh] flex flex-col gap-6 justify-center items-center">
 
-            <div className="max-sm:px-6 px-8 py-32">
+            <m.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.3,
+                    ease: "easeInOut"
+                }} className="max-sm:px-6 px-8 py-32">
                 <div className="grid gap-8 items-start justify-center">
                     <div className="relative group">
                         <div className="absolute -inset-0.5 bg-gradient-to-tr from-[#9945FF] to-[#14F195] rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
@@ -221,9 +233,15 @@ export function TokenLaunchpad() {
                 </div>
                 <h2 className="font-semibold text-md text-center  text-red-500 mt-10">Please connect Wallet to use the Launchpad</h2>
                 <div className="max-sm:hidden flex justify-center mt-5"><WalletMultiButton /></div>
-            </div>
-        </div>}
-        {wallet.connected && <div className="relative max-mobile:w-[300px] max-sm:w-[350px] md:w-[1100px]">
+            </m.div>
+        </m.div>}
+        {wallet.connected && <m.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+                duration: 0.3,
+                ease: "easeInOut"
+            }} className="relative max-mobile:w-[300px] max-sm:w-[350px] md:w-[1100px]">
             <div className="absolute -inset-1">
                 <div className="w-full h-full mx-auto bg-gradient-to-tr from-[#9945FF] to-[#14F195] opacity-30 blur-lg filter ">
                 </div>
@@ -381,7 +399,7 @@ export function TokenLaunchpad() {
                 </CardContent>
 
             </Card>
-        </div>
+        </m.div>
 
         }
     </div >
